@@ -10,7 +10,7 @@ const port = 3000;
 // Middleware for parsing JSON bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'http://10.17.0.169:5500' }));
+app.use(cors()); // Allow all origins (or customize as needed)
 
 // SQLite database connection
 const db = new sqlite3.Database('./ballot_box.sqlite', (err) => {
@@ -42,50 +42,65 @@ app.get('/api/elections', (req, res) => {
 });
 
 // Signup route
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  db.get('SELECT id FROM users WHERE username = ? OR email = ?', [username, email], async (err, row) => {
+  try {
+    const row = await new Promise((resolve, reject) => {
+      db.get('SELECT id FROM users WHERE username = ? OR email = ?', [username, email], (err, row) => {
+        if (err) return reject(err);
+        resolve(row);
+      });
+    });
+
     if (row) {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    db.run('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword], (err) => {
-      if (err) {
-        console.error('Signup error:', err);
-        res.status(500).json({ message: 'An error occurred during signup' });
-        return;
-      }
-      res.status(201).json({ message: 'User created successfully' });
+    await new Promise((resolve, reject) => {
+      db.run('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword], (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
     });
-  });
+
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ message: 'An error occurred during signup' });
+  }
 });
 
 // Login route
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid username or password' });
-    }
+  try {
+    const user = await new Promise((resolve, reject) => {
+      db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) return reject(err);
+        resolve(user);
+      });
+    });
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     res.status(200).json({ message: 'Login successful' });
-  });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'An error occurred during login' });
+  }
 });
 
 // Error handling middleware
