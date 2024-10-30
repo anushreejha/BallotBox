@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const cors = require('cors');
@@ -9,42 +9,17 @@ const port = 3000;
 
 // Middleware for parsing JSON bodies
 app.use(express.json());
-
-// Middleware for parsing URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: 'http://10.17.0.169:5500' }));
 
-// Enable CORS for all routes (you can restrict it later)
-app.use(cors({
-  origin: 'http://10.17.0.169:5500', // Adjust this to your frontend address
-}));
-
-// MongoDB connection string
-const uri = process.env.MONGODB_URI;
-
-if (!uri) {
-  console.error('MONGODB_URI is not defined in the environment variables');
-  process.exit(1);
-}
-
-// Create a new MongoClient
-const client = new MongoClient(uri);
-
-let db;
-
-// Function to connect to MongoDB
-async function connectToDatabase() {
-  try {
-    await client.connect();
-    db = client.db('ballotbox');
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
+// SQLite database connection
+const db = new sqlite3.Database('./ballot_box.sqlite', (err) => {
+  if (err) {
+    console.error('Error connecting to SQLite:', err);
     process.exit(1);
   }
-}
-
-// Connect to the database when the server starts
-connectToDatabase();
+  console.log('Connected to SQLite database');
+});
 
 // Serve static files from the current directory
 app.use(express.static('.'));
@@ -55,78 +30,62 @@ app.get('/', (req, res) => {
 });
 
 // Example API endpoint to fetch elections
-app.get('/api/elections', async (req, res) => {
-  try {
-    const elections = db.collection('elections');
-    const result = await elections.find({}).toArray();
-    res.json(result);
-  } catch (error) {
-    console.error('Error fetching elections:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+app.get('/api/elections', (req, res) => {
+  db.all('SELECT * FROM elections', [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching elections:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // Signup route
-app.post('/signup', async (req, res) => {
-  console.log('Received signup request:', req.body);
-  try {
-    const { username, email, password } = req.body;
+app.post('/signup', (req, res) => {
+  const { username, email, password } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
-    // Check if user already exists
-    const existingUser = await db.collection('users').findOne({ $or: [{ username }, { email }] });
-
-    console.log('User found:', user);  // Add this line to check if user data is being fetched
-
-    if (existingUser) {
+  db.get('SELECT id FROM users WHERE username = ? OR email = ?', [username, email], async (err, row) => {
+    if (row) {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert new user into the database
-    await db.collection('users').insertOne({ username, email, password: hashedPassword });
-
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ message: 'An error occurred during signup', error: error.message });
-  }
+    db.run('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword], (err) => {
+      if (err) {
+        console.error('Signup error:', err);
+        res.status(500).json({ message: 'An error occurred during signup' });
+        return;
+      }
+      res.status(201).json({ message: 'User created successfully' });
+    });
+  });
 });
 
 // Login route
-app.post('/login', async (req, res) => {
-  console.log('Received login request:', req.body);
-  try {
-    const { username, password } = req.body;
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+  if (!username || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
-    // Find the user by username
-    const user = await db.collection('users').findOne({ username });
-
+  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
     if (!user) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
-
     if (!passwordMatch) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     res.status(200).json({ message: 'Login successful' });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'An error occurred during login', error: error.message });
-  }
+  });
 });
 
 // Error handling middleware
@@ -135,7 +94,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -13,11 +13,11 @@ if (!$username || !$password) {
 }
 
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo = new PDO($dsn, null, null, $options);
     
     $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = ?");
     $stmt->execute([$username]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch();
     
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];

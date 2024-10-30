@@ -13,9 +13,8 @@ if (!$username || !$email || !$password) {
 }
 
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo = new PDO($dsn, null, null, $options);
     
-    // Check if username or email already exists
     $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
     $stmt->execute([$username, $email]);
     if ($stmt->fetch()) {
@@ -24,7 +23,6 @@ try {
         exit;
     }
     
-    // Insert new user
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
     $stmt->execute([$username, $email, $hashedPassword]);
