@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ballotbox - Election Details</title>
+    <link rel="stylesheet" href="Dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ballotbox</h1>
+            <nav>
+                <ul>
+                    <li><a href="Dashboard.html">Dashboard</a></li>
+                    <li><a href="Profile.html">Profile</a></li>
+                    <li><a href="index.html">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <h2>Election Details</h2>
+            <div class="card">
+                <form id="electionDetailsForm">
+                    <div class="form-group">
+                        <label for="placeToVote">Place to Vote:</label>
+                        <select id="placeToVote" name="placeToVote" required>
+                            <option value="">Select a city</option>
+                            <option value="bangalore">Bangalore</option>
+                            <option value="delhi">Delhi</option>
+                            <option value="kolkata">Kolkata</option>
+                            <option value="chennai">Chennai</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="wantToVote">Want to Vote:</label>
+                        <div class="toggle-container">
+                            <input type="checkbox" id="wantToVote" name="wantToVote">
+                            <label for="wantToVote" class="toggle-label"></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Details</button>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 Ballotbox. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('electionDetailsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const placeToVote = document.getElementById('placeToVote').value;
+            const wantToVote = document.getElementById('wantToVote').checked;
+            const electionId = new URLSearchParams(window.location.search).get('id');
+
+            try {
+                const response = await fetch('http://localhost:3000/update-election-details', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ electionId, placeToVote, wantToVote }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                alert(result.message);
+                window.location.href = 'Dashboard.html';
+            } catch (error) {
+                console.error('Fetch error:', error);
+                alert('An error occurred while saving election details. Please check the console for details.');
+            }
+        });
+    </script>
+</body>
+</html>

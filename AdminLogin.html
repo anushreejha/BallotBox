@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BallotBox Admin</title>
+    <link rel="stylesheet" href="LoginPage.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-box">
+            <img src="img/BallotBoxLogo.jpeg" alt="Ballot Box Logo" class="logo">
+            <h2>Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="input-group">
+                    <label for="adminUsername">Admin Username</label>
+                    <input type="text" id="adminUsername" name="adminUsername" required>
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" name="adminPassword" required>
+                </div>
+                <button type="submit">Login as Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const adminUsername = document.getElementById('adminUsername').value;
+            const adminPassword = document.getElementById('adminPassword').value;
+
+            try {
+                const response = await fetch('/admin-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ adminUsername, adminPassword }),
+                });
+
+                if (response.ok) {
+                    window.location.href = 'AdminDashboard.html';
+                } else {
+                    alert('Invalid admin credentials');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
