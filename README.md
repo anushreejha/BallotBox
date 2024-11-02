@@ -26,7 +26,7 @@ To set up the BallotBox project locally, follow these steps:
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/anushreejha/BallotBox.git
+git clone https://github.com/anushreejha/BallotBox
 cd BallotBox
 ```
 
