@@ -34,7 +34,6 @@ cd BallotBox
 Ensure that you have Python installed (check SQLite; usually present by default). Use pip to install the required Python packages:
 
 ```bash
-Copy code
 pip install -r requirements.txt
 ```
 
