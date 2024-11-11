@@ -31,7 +31,7 @@ cd BallotBox
 ```
 
 ### 2. Install dependencies: 
-Ensure that you have Python installed (check SQLite; usually present by default). Use pip to install the required Python packages:
+Ensure you have Node.js installed (check SQLite; usually present by default). Use pip to install the required Python packages:
 
 ```bash
 pip install -r requirements.txt
@@ -46,13 +46,13 @@ Set up the configuration for AADHAR API integration and database connection in t
 ### 4. Run the server:
 
 ```bash
-python app.py
+npm start server.py
 ```
 
 ### 5. Access the application: 
 To access the interface, open your web browser and go to:
 ```bash
-http://localhost:5000 
+http://localhost:3000 
 ```
 
 ## Usage
