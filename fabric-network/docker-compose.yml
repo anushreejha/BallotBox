@@ -5,7 +5,7 @@ services:
     image: hyperledger/fabric-orderer:2.5.0
     environment:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LISTENPORT=8000  # Changed to 8000
       - ORDERER_GENERAL_LOGLEVEL=INFO
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
@@ -16,23 +16,24 @@ services:
     volumes:
       - ./channel-artifacts:/var/hyperledger/orderer
     ports:
-      - "7050:7050"
+      - "8000:7050" 
+      - "8003:7053" 
 
   peer0.org1.example.com:
     image: hyperledger/fabric-peer:2.5.0
     environment:
       - CORE_PEER_ID=peer0.org1.example.com
-      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:8001  # Changed to 8001
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8001  # Changed to 8001
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:8002  # Changed to 8002
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:8001  # Changed to 8001
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:8001  # Changed to 8001
       - CORE_PEER_LOCALMSPID=Org1MSP
     volumes:
       - ./peer-artifacts:/var/hyperledger/peer
     ports:
-      - "7051:7051"
-      - "7053:7053"
+      - "8001:7050" 
+      - "8002:7051" 
 
 networks:
   default:
