@@ -1,0 +1,68 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # Orderer
+  # ---------------------------------------------------------------------------
+  - Name: OrdererOrg
+    Domain: orderer.ballotbox.com
+    EnableNodeOUs: true
+
+
+    # ---------------------------------------------------------------------------
+    # "Specs" - See PeerOrgs for complete description
+    # ---------------------------------------------------------------------------
+    Specs:
+      - Hostname: orderer
+        SANS:
+          - localhost
+        TLS:
+          # Enabling TLS for the orderer
+          Enabled: true
+          CertFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          KeyFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+          ClientAuthRequired: false
+          ClientRootCAs:
+            - ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
+
+      - Hostname: orderer2
+        SANS:
+          - localhost
+        TLS:
+          # Enabling TLS for the orderer2
+          Enabled: true
+          CertFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          KeyFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+          ClientAuthRequired: false
+          ClientRootCAs:
+            - ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
+
+      - Hostname: orderer3
+        SANS:
+          - localhost
+        TLS:
+          # Enabling TLS for the orderer3
+          Enabled: true
+          CertFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          KeyFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+          ClientAuthRequired: false
+          ClientRootCAs:
+            - ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
+
+      - Hostname: orderer4
+        SANS:
+          - localhost
+        TLS:
+          # Enabling TLS for the orderer4
+          Enabled: true
+          CertFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          KeyFile: ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+          ClientAuthRequired: false
+          ClientRootCAs:
+            - ../ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
