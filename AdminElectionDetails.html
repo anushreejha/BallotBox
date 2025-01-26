@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Election Details</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        body {
+            text-align: center;
+        }
+        header {
+            text-align: left;
+            height: 60px;
+        }
+        header h1 {
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+        .logo {
+            height: 40px;
+        }
+        main {
+            padding-top: 70px;
+        }
+        button {
+            background-color: #808080;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #606060;
+        }
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #f1f1f1;
+            color: black;
+            text-align: center;
+            padding: 10px 0;
+        }
+        #election-details {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        #election-details h2 {
+            text-align: center;
+        }
+        #election-details p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="img/BallotBoxLogo.jpeg" alt="Ballot Box Logo" class="logo">
+        <h1>Admin Election Details</h1>
+        <button id="backBtn">Back to Dashboard</button>
+    </header>
+
+    <main>
+        <section id="election-details">
+            <h2 id="election-name"></h2>
+            <p id="election-date"></p>
+            <p id="election-type"></p>
+            <p id="election-constituency"></p>
+            <p id="total-voters"></p>
+            <p id="voters-in-constituency"></p>
+            <p id="voters-outside-constituency"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 BallotBox. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Hardcoded elections data (same as in AdminDashboard.html)
+        const elections = [
+            { id: 1, name: "City Council Election 2023", date: "2023-11-15", type: "Local", constituency: "Downtown", totalVoters: 50000, votersInConstituency: 48000, votersOutsideConstituency: 2000 },
+            { id: 2, name: "State Governor Election 2024", date: "2024-03-10", type: "State", constituency: "Statewide", totalVoters: 5000000, votersInConstituency: 4900000, votersOutsideConstituency: 100000 },
+            { id: 3, name: "Federal Parliament Election 2024", date: "2024-05-20", type: "Federal", constituency: "National", totalVoters: 200000000, votersInConstituency: 195000000, votersOutsideConstituency: 5000000 }
+        ];
+
+        function getElectionDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const electionId = parseInt(urlParams.get('id'));
+            const election = elections.find(e => e.id === electionId);
+
+            if (election) {
+                document.getElementById('election-name').textContent = election.name;
+                document.getElementById('election-date').textContent = `Date: ${election.date}`;
+                document.getElementById('election-type').textContent = `Type: ${election.type}`;
+                document.getElementById('election-constituency').textContent = `Constituency: ${election.constituency}`;
+                document.getElementById('total-voters').textContent = `Total Voters: ${election.totalVoters}`;
+                document.getElementById('voters-in-constituency').textContent = `Voters in Constituency: ${election.votersInConstituency}`;
+                document.getElementById('voters-outside-constituency').textContent = `Voters Outside Constituency: ${election.votersOutsideConstituency}`;
+            } else {
+                document.getElementById('election-details').innerHTML = '<p>Election not found.</p>';
+            }
+        }
+
+        // Event listener for back button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'AdminDashboard.html';
+        });
+
+        // Get election details when the page loads
+        getElectionDetails();
+    </script>
+</body>
+</html>
