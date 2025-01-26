@@ -6,6 +6,11 @@ app = Flask(__name__)
 blockchain = Blockchain()
 ipfs = IPFSHelper()
 
+@app.route("/")
+def home():
+    return jsonify({"message": "Welcome to the BallotBox API!"})
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
