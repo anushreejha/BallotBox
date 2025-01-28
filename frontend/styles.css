@@ -1,56 +1,114 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
+nav {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
 }
 
-.container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+nav button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    background-color: #1e90ff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.8);
 }
 
-h1 {
+nav button:hover {
+    box-shadow: 0 0 15px rgba(30, 144, 255, 1);
+}
+
+#blockchainData {
+    margin-top: 20px;
+    text-align: left;
+    font-family: monospace;
+    background: rgba(249, 249, 249, 0.8);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow-x: auto;
     color: #333;
 }
 
-form {
+body {
+    font-family: 'Roboto', sans-serif;
+    background: url('bg.jpg') repeat;
+    background-size: cover;
+    color: #1e90ff;
+    text-shadow: 0 0 10px rgba(30, 144, 255, 0.8), 0 0 20px rgba(30, 144, 255, 0.8);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    animation: moveBackground 10s linear infinite;
 }
 
-label {
-    margin-top: 10px;
-    margin-bottom: 5px;
-    color: #555;
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(30, 144, 255, 0.8), 0 0 30px rgba(30, 144, 255, 0.8);
 }
 
-input, select, button {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
+@keyframes moveBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
 }
 
 button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
     font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #1e90ff;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.8);
+    display: block;
+    margin: 10px auto;
 }
 
 button:hover {
-    background-color: #0056b3;
+    box-shadow: 0 0 15px rgba(30, 144, 255, 1);
 }
 
-p {
-    margin-top: 20px;
-    color: green;
+#responseMessage {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #fff;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 1rem;
+    color: #fff;
+}
+
+input[type="text"], select {
+    width: calc(100% - 20px);
+    max-width: 400px;
+    display: block;
+    margin: 8px auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    text-align: center;
+}
+
+#voteSection, #blockchainSection {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.8);
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
 }
